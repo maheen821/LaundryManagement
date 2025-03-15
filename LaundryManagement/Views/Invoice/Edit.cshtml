@@ -1,0 +1,65 @@
+﻿<div class="container my-4">
+    <h2 class="text-center text-primary">Edit Invoice</h2>
+
+    <form id="editForm" action="@Url.Action("Edit", "Invoice")" method="post">
+        <input type="hidden" name="InvoiceID" value="@Model.InvoiceID">
+
+        <div class="mb-3">
+            <label class="form-label">Customer Name</label>
+            <input type="text" name="CustomerName" class="form-control" value="@Model.CustomerName" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Customer Email</label>
+            <input type="email" name="CustomerEmail" class="form-control" value="@Model.CustomerEmail" required>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Invoice Date</label>
+            <input type="date" name="InvoiceDate" class="form-control" value="@Model.InvoiceDate.ToString("yyyy-MM-dd")" readonly>
+        </div>
+
+        <h4 class="text-secondary">Invoice Items</h4>
+
+        <table class="table table-bordered">
+            <thead class="table-dark text-white">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            <input type="text" name="Items[@i].ItemName" class="form-control" value="@Model.Items[i].ItemName" required>
+                        </td>
+                        <td>
+                            <input type="number" name="Items[@i].Quantity" class="form-control" value="@Model.Items[i].Quantity" min="1" required>
+                        </td>
+                        <td>
+                            <input type="number" name="Items[@i].UnitPrice" class="form-control" value="@Model.Items[i].UnitPrice" min="0" step="0.01" required>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+
+        <a href="@Url.Action("AdminPanel", "Invoice")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Cancel
+        </a>
+    </form>
+</div>
+
+<!-- JavaScript Debugging Script -->
+<script>
+    document.getElementById("editForm").addEventListener("submit", function (event) {
+        alert("Form is being submitted!"); // Debugging Alert
+    });
+</script>

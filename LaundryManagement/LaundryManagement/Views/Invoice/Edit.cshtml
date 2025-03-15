@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Edit";
+}
+@model LaundryManagement.Models.Invoice
+@{
+    ViewBag.Title = "Edit Invoice";
+}
+
+<h2>Edit Invoice</h2>
+
+<form method="post" action="@Url.Action("Edit")">
+    <input type="hidden" name="InvoiceID" value="@Model.InvoiceID" />
+
+    <label>Customer Name:</label>
+    <input type="text" name="CustomerName" value="@Model.CustomerName" required />
+
+    <label>Customer Email:</label>
+    <input type="email" name="CustomerEmail" value="@Model.CustomerEmail" required />
+
+    <label>Total Amount:</label>
+    <input type="number" name="TotalAmount" value="@Model.TotalAmount" required />
+
+    <button type="submit">Update</button>
+</form>
+
+<a href="@Url.Action("AdminPanel")">Back to List</a>
+
+

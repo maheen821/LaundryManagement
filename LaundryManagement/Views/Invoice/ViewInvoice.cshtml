@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Invoice Details";
+}
+
+@model List<LaundryManagement.Models.Invoice>
+
+<!-- Bootstrap & FontAwesome Links -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container my-4">
+    <h2 class="text-center text-primary">All Invoices</h2>
+
+    <table class="table table-bordered">
+        <thead class="table-dark text-white">
+            <tr>
+                <th>Invoice ID</th>
+                <th>Customer Name</th>
+                <th>Email</th>
+                <th>Invoice Date</th>
+                <th>Total Amount</th>
+                <th>Items</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>@invoice.InvoiceID</td>
+                    <td>@invoice.CustomerName</td>
+                    <td>@invoice.CustomerEmail</td>
+                    <td>@invoice.InvoiceDate.ToShortDateString()</td>
+                    <td>@invoice.TotalAmount</td>
+                    <td>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in invoice.Items)
+                                {
+                                    <tr>
+                                        <td>@item.ItemName</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.UnitPrice</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <!-- Edit Button -->
+                        <a href="@Url.Action("EditView", "Invoice", new { id = invoice.InvoiceID })" class="btn btn-warning btn-sm">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

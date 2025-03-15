@@ -1,0 +1,74 @@
+﻿
+@{
+    ViewBag.Title = "EditView";
+}
+@model LaundryManagement.Models.Invoice
+
+@{
+    ViewBag.Title = "Edit Invoice";
+}
+
+<!-- Bootstrap & FontAwesome Links -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<div class="container my-4">
+    <h2 class="text-center text-primary">Edit Invoice</h2>
+
+    @using (Html.BeginForm("Edit", "Invoice", FormMethod.Post))
+    {
+        @Html.HiddenFor(m => m.InvoiceID)
+
+        <div class="mb-3">
+            <label class="form-label">Customer Name</label>
+            @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control", required = "required" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Customer Email</label>
+            @Html.TextBoxFor(m => m.CustomerEmail, new { @class = "form-control", type = "email", required = "required" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Invoice Date</label>
+            @Html.TextBoxFor(m => m.InvoiceDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = "required", @readonly = "readonly" })
+
+        </div>
+
+        <h4 class="text-secondary">Invoice Items</h4>
+
+        <table class="table table-bordered">
+            <thead class="table-dark text-white">
+                <tr>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Items.Count; i++)
+                {
+                    <tr>
+
+                        <td>@Html.TextBoxFor(m => m.Items[i].ItemName, new { @class = "form-control", required = "required" })</td>
+                        <td>@Html.TextBoxFor(m => m.Items[i].Quantity, new { @class = "form-control", type = "number", min = "1", required = "required" })</td>
+                        <td>@Html.TextBoxFor(m => m.Items[i].UnitPrice, new { @class = "form-control", type = "number", min = "0", step = "0.01", required = "required" })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <button type="submit"  href="@Url.Action("ViewInvoice", "Invoice")" class="btn btn-success">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+
+        <a href="@Url.Action("ViewInvoice", "Invoice")" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Cancel
+        </a>
+    }
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
