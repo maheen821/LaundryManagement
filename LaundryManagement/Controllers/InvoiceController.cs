@@ -1,4 +1,5 @@
-﻿using LaundryManagement.Models;
+﻿
+using LaundryManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -108,6 +109,8 @@ namespace LaundryManagement.Controllers
         {
             Invoice invoice = null;
             List<InvoiceItem> items = new List<InvoiceItem>();
+            string paymentMethod = "N/A";
+            string paymentStatus = "Pending";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -122,12 +125,24 @@ namespace LaundryManagement.Controllers
                 {
                     invoice = new Invoice
                     {
-                        InvoiceID = reader["InvoiceID"] != DBNull.Value ? Convert.ToInt32(reader["InvoiceID"]) : 0,
-                        CustomerName = reader["CustomerName"] != DBNull.Value ? reader["CustomerName"].ToString() : "N/A",
-                        CustomerEmail = reader["CustomerEmail"] != DBNull.Value ? reader["CustomerEmail"].ToString() : "N/A",
-                        InvoiceDate = reader["InvoiceDate"] != DBNull.Value ? Convert.ToDateTime(reader["InvoiceDate"]) : DateTime.Now,
-                        TotalAmount = reader["TotalAmount"] != DBNull.Value ? Convert.ToDecimal(reader["TotalAmount"]) : 0
+                        InvoiceID = Convert.ToInt32(reader["InvoiceID"]),
+                        CustomerName = reader["CustomerName"].ToString(),
+                        CustomerEmail = reader["CustomerEmail"].ToString(),
+                        InvoiceDate = Convert.ToDateTime(reader["InvoiceDate"]),
+                        TotalAmount = Convert.ToDecimal(reader["TotalAmount"])
                     };
+                }
+                reader.Close();
+
+                // ✅ Fetch Payment Details (JOIN Payment Table)
+                query = "SELECT PaymentMethod, PaymentStatus FROM Payments WHERE InvoiceID = @InvoiceID";
+                cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@InvoiceID", id);
+                reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    paymentMethod = reader["PaymentMethod"] != DBNull.Value ? reader["PaymentMethod"].ToString() : "N/A";
+                    paymentStatus = reader["PaymentStatus"] != DBNull.Value ? reader["PaymentStatus"].ToString() : "Pending";
                 }
                 reader.Close();
 
@@ -140,11 +155,10 @@ namespace LaundryManagement.Controllers
                 {
                     items.Add(new InvoiceItem
                     {
-                       
-                        InvoiceID = reader["InvoiceID"] != DBNull.Value ? Convert.ToInt32(reader["InvoiceID"]) : 0,
-                        ItemName = reader["ItemName"] != DBNull.Value ? reader["ItemName"].ToString() : "N/A",
-                        Quantity = reader["Quantity"] != DBNull.Value ? Convert.ToInt32(reader["Quantity"]) : 0,
-                        UnitPrice = reader["UnitPrice"] != DBNull.Value ? Convert.ToDecimal(reader["UnitPrice"]) : 0
+                        InvoiceID = Convert.ToInt32(reader["InvoiceID"]),
+                        ItemName = reader["ItemName"].ToString(),
+                        Quantity = Convert.ToInt32(reader["Quantity"]),
+                        UnitPrice = Convert.ToDecimal(reader["UnitPrice"])
                     });
                 }
             }
@@ -157,10 +171,13 @@ namespace LaundryManagement.Controllers
             ViewBag.CustomerName = invoice.CustomerName;
             ViewBag.CustomerEmail = invoice.CustomerEmail;
             ViewBag.TotalAmount = invoice.TotalAmount;
+            ViewBag.PaymentMethod = paymentMethod;  // ✅ Now fetched from Payment Table
+            ViewBag.PaymentStatus = paymentStatus;  // ✅ Now fetched from Payment Table
             ViewBag.Items = items;
 
             return View(invoice);
         }
+
 
         // ✅ Admin Panel (List Invoices + Search)
         public ActionResult AdminPanel(string search)
@@ -329,7 +346,7 @@ namespace LaundryManagement.Controllers
                 {
                     invoiceItems.Add(new InvoiceItem
                     {
- 
+
                         ItemName = itemsReader["ItemName"].ToString(),
                         Quantity = Convert.ToInt32(itemsReader["Quantity"]),
                         UnitPrice = Convert.ToDecimal(itemsReader["UnitPrice"])

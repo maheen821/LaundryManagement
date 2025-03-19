@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     ViewBag.Title = "Create Invoice";
 }
 
@@ -51,7 +51,6 @@
         <button class="btn btn-primary w-100 mt-2" onclick="submitInvoice()">🖨️ Save & Generate Invoice</button>
     </div>
 </div>
-
 <script>
     let totalAmount = 0;
 
@@ -64,7 +63,7 @@
             { name: "Cap", price: 300 },
             { name: "Bedsheet", price: 300 },
             { name: "Pant", price: 300 },
-            { name: "Dupatta", print:200, },
+            { name: "Dupatta", print: 200, },
 
             { name: "Shirt", price: 250 },
             { name: "Suit", price: 500 },
@@ -114,6 +113,7 @@
         let customerName = document.getElementById("customerName").value;
         let customerEmail = document.getElementById("customerEmail").value;
         let items = [];
+        // $("#paymentDetails").hide();
 
         document.querySelectorAll("#itemTable tr").forEach(row => {
             let itemName = row.querySelector('select').selectedOptions[0].innerText.split(' - ')[0];
@@ -122,6 +122,7 @@
 
             items.push({ ItemName: itemName, Quantity: quantity, UnitPrice: unitPrice });
         });
+
 
         if (customerName === "" || customerEmail === "" || items.length === 0) {
             Swal.fire({
@@ -141,6 +142,7 @@
                 CustomerEmail: customerEmail,
                 TotalAmount: totalAmount,
                 Items: items
+   
             }),
             success: function (response) {
                 if (response.success) {
@@ -150,9 +152,11 @@
                         text: 'Your invoice has been successfully saved.',
                         showConfirmButton: false,
                         timer: 2000
+                       
                     });
-
+                   
                     window.location.href = "/Invoice/Receipt/" + response.invoiceID;
+                  
                 } else {
                     Swal.fire({
                         icon: 'error',
